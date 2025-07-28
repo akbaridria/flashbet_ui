@@ -11,6 +11,7 @@ import { Separator } from "./components/ui/separator";
 import TradingViewWidget from "./components/tradingview-widget";
 import PlaceBet from "./components/place-bet";
 import LiquidityManagement from "./components/liquidity-management";
+import RecentActivity from "./components/recent-activity";
 
 function App() {
   return (
@@ -47,9 +48,10 @@ function App() {
           <div className="bg-secondary border border-primary border-dashed rounded-lg p-6">
             <h1 className="text-xl font-bold mb-2">FlashBet</h1>
             <p className="text-muted-foreground text-sm">
-              FlashBet lets you predict whether the Bitcoin (BTC) price will go
-              up or down over short time periods. Just choose your direction (
-              <span className="font-bold text-white">up</span> or{" "}
+              FlashBet lets you predict whether the{" "}
+              <span className="font-bold text-white">Bitcoin (BTC)</span> price
+              will go up or down over short time periods. Just choose your
+              direction (<span className="font-bold text-white">up</span> or{" "}
               <span className="font-bold text-white">down</span>), choose a time
               period from{" "}
               <span className="font-bold text-white">2 to 10 minutes</span>, and
@@ -65,7 +67,7 @@ function App() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <PlaceBet />
             <LiquidityManagement />
-            <div className="p-4 bg-secondary rounded-lg">this is history</div>
+            <RecentActivity />
           </div>
         </div>
       </main>

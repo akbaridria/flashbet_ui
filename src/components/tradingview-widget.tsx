@@ -21,7 +21,6 @@ function TradingViewWidget() {
         style: "1",
         locale: "en",
         enable_publishing: false,
-        backgroundColor: "#262626",
         hide_top_toolbar: false,
         hide_legend: false,
         save_image: false,

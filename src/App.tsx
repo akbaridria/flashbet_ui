@@ -10,6 +10,7 @@ import { Button } from "./components/ui/button";
 import { Separator } from "./components/ui/separator";
 import TradingViewWidget from "./components/tradingview-widget";
 import PlaceBet from "./components/place-bet";
+import LiquidityManagement from "./components/liquidity-management";
 
 function App() {
   return (
@@ -47,23 +48,23 @@ function App() {
             <h1 className="text-xl font-bold mb-2">FlashBet</h1>
             <p className="text-muted-foreground text-sm">
               FlashBet lets you predict whether the Bitcoin (BTC) price will go
-              up or down over short time periods. Just choose your direction (up
-              or down), choose a time period from 2 to 10 minutes, and bet. You
-              win if you're correct! Fast, simple, and supported by on-chain
-              price feeds.
+              up or down over short time periods. Just choose your direction (
+              <span className="font-bold text-white">up</span> or{" "}
+              <span className="font-bold text-white">down</span>), choose a time
+              period from{" "}
+              <span className="font-bold text-white">2 to 10 minutes</span>, and
+              bet. You win <span className="font-bold text-white">1.75x</span>{" "}
+              if you're correct! Fast, simple, and supported by{" "}
+              <span className="font-bold text-white">on-chain price feeds</span>
+              .
             </p>
           </div>
           <div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">BTC/USD Price Chart</h2>
-            </div>
             <TradingViewWidget />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <PlaceBet />
-            <div className="p-4 bg-secondary rounded-lg">
-              this is liquidity provider
-            </div>
+            <LiquidityManagement />
             <div className="p-4 bg-secondary rounded-lg">this is history</div>
           </div>
         </div>

@@ -1,51 +1,18 @@
 import { ThemeProvider } from "@/components/theme-provider";
-import {
-  DropletsIcon,
-  GithubIcon,
-  InfoIcon,
-  Wallet2Icon,
-  ZapIcon,
-} from "lucide-react";
-import { Button } from "./components/ui/button";
-import { Separator } from "./components/ui/separator";
 import TradingViewWidget from "./components/tradingview-widget";
 import PlaceBet from "./components/place-bet";
 import LiquidityManagement from "./components/liquidity-management";
 import RecentActivity from "./components/recent-activity";
 import { Web3Provider } from "./providers/web3-providers";
+import { Toaster } from "@/components/ui/sonner";
+import Header from "./components/header";
 
 function App() {
   return (
     <Web3Provider>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <main>
-          <div className="border-b border-dashed border-primary sticky top-0 bg-background">
-            <div className="max-w-[1200px] mx-auto p-4 border-x border-dashed border-primary">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <ZapIcon className="h-6 w-6" />
-                  <div className="text-xl font-bold">FlashBet</div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="icon">
-                    <DropletsIcon className="h-4 w-4" />
-                  </Button>
-                  <Separator orientation="vertical" className="min-h-4" />
-                  <Button variant="ghost" size="icon">
-                    <InfoIcon className="h-4 w-4" />
-                  </Button>
-                  <Separator orientation="vertical" className="min-h-4" />
-                  <Button variant="ghost" size="icon">
-                    <GithubIcon className="h-4 w-4" />
-                  </Button>
-                  <Separator orientation="vertical" className="min-h-4" />
-                  <Button variant="ghost" size="icon">
-                    <Wallet2Icon className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Header />
           <div className="max-w-[1200px] mx-auto p-4 min-h-screen border-x border-dashed border-primary space-y-6">
             <div className="bg-secondary border border-primary border-dashed rounded-lg p-6">
               <h1 className="text-xl font-bold mb-2">FlashBet</h1>
@@ -75,6 +42,7 @@ function App() {
               <RecentActivity />
             </div>
           </div>
+          <Toaster />
         </main>
       </ThemeProvider>
     </Web3Provider>

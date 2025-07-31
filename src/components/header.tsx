@@ -3,7 +3,7 @@ import { ZapIcon, DropletsIcon, InfoIcon, GithubIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { ConnectKitButton } from "connectkit";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { etherlinkTestnet } from "viem/chains";
 import config from "@/config";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
@@ -20,6 +20,9 @@ import {
 } from "./ui/alert-dialog";
 import UsdcAbi from "@/abis/mock-erc20.json";
 import { toast } from "sonner";
+import useWaitForTx from "@/hooks/useWaitTx";
+import useReadState from "@/hooks/useReadState";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ToolTipButtonProps {
   content: string;
@@ -72,9 +75,24 @@ const FaucetButton: React.FC<FaucetButtonProps> = ({ onClaim }) => {
 };
 
 const Header = () => {
+  const queryClient = useQueryClient();
+  const [hash, setHash] = useState<`0x${string}` | undefined>(undefined);
   const { isConnected, chainId } = useAccount();
   const { switchChain } = useSwitchChain();
-  const { writeContractAsync } = useWriteContract();
+  const { qkUsdcBalance } = useReadState();
+  const { writeContractAsync } = useWriteContract({
+    mutation: {
+      onMutate: () => {
+        toast.loading("Confirm transaction in your wallet", {
+          id: "claim-toast",
+        });
+      },
+      onSuccess: () => {
+        toast.dismiss("claim-toast");
+        toast.success("Confirmed!");
+      },
+    },
+  });
 
   useEffect(() => {
     if (!isConnected || !chainId) return;
@@ -84,17 +102,20 @@ const Header = () => {
     }
   }, [isConnected, chainId, switchChain]);
 
-  const onClaim = useCallback(() => {
-    const claimUsdc = writeContractAsync({
+  useWaitForTx({
+    hash,
+    callbackOnSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: qkUsdcBalance });
+    },
+  });
+
+  const onClaim = useCallback(async () => {
+    const hashClaim = await writeContractAsync({
       address: config.usdcAddress as `0x${string}`,
       abi: UsdcAbi,
       functionName: "mint",
     });
-    toast.promise(claimUsdc, {
-      loading: "Claiming USDC...",
-      success: () => "Successfully claimed 100 USDC!",
-      error: (error) => `Failed to claim USDC: ${error.message}`,
-    });
+    setHash(hashClaim);
   }, [writeContractAsync]);
 
   return (

@@ -36,7 +36,7 @@ const useReadState = () => {
     usdcBalance: usdcBalance as bigint | undefined,
     qkUsdcBalance: qkUsdcBalance as string[],
     isLoadingUsdcBalance,
-    userBets: userBets as number[] | undefined,
+    userBets: userBets as bigint[] | undefined,
     isLoadingUserBets,
     qkUserBets: qkUserBets as string[],
   };

@@ -32,6 +32,26 @@ const useReadState = () => {
       enabled: !!address,
     },
   });
+
+  const { data: timeUntilWithdrawalWindowOpens } = useReadContract({
+    address: config.flashbetAddress as `0x${string}`,
+    abi: flashbetAbi,
+    functionName: "timeUntilWithdrawalWindowOpens",
+    args: [],
+    query: {
+      refetchInterval: 10_000,
+    },
+  });
+
+  const { data: userBalance, queryKey: qkUserLiquidity } = useReadContract({
+    address: config.flashbetAddress as `0x${string}`,
+    abi: flashbetAbi,
+    functionName: "getProviderBalance",
+    args: [address],
+    query: {
+      enabled: !!address,
+    },
+  });
   return {
     usdcBalance: usdcBalance as bigint | undefined,
     qkUsdcBalance: qkUsdcBalance as string[],
@@ -39,6 +59,11 @@ const useReadState = () => {
     userBets: userBets as bigint[] | undefined,
     isLoadingUserBets,
     qkUserBets: qkUserBets as string[],
+    timeUntilWithdrawalWindowOpens: timeUntilWithdrawalWindowOpens as
+      | bigint
+      | undefined,
+    userBalance: userBalance as bigint | undefined,
+    qkUserLiquidity: qkUserLiquidity as string[],
   };
 };
 

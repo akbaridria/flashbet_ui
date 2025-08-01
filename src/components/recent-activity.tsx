@@ -1,4 +1,8 @@
-import { TrendingUpIcon, TrendingDownIcon } from "lucide-react";
+"use client";
+
+import type React from "react";
+
+import { TrendingUpIcon, TrendingDownIcon, Activity } from "lucide-react";
 import { Badge } from "./ui/badge";
 import useReadState from "@/hooks/useReadState";
 import { useReadContract } from "wagmi";
@@ -10,6 +14,7 @@ import { formatCurrency } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
 const StatusBet = ["Pending", "Resolved", "Cancelled"];
+
 interface BetInfo {
   amount: bigint;
   entryPrice: bigint;
@@ -30,13 +35,17 @@ const ItemActivity: React.FC<{ betId: bigint }> = ({ betId }) => {
     functionName: "getBetInfo",
     args: [betId],
   }) as { data: BetInfo | undefined };
+
   console.log("data", data);
+
   const duration = useMemo(() => {
     return data?.expiryTime !== undefined && data?.entryTime !== undefined
       ? `${(data.expiryTime - data.entryTime) / BigInt(60)}m`
       : "N/A";
   }, [data]);
+
   console.log("duration", duration);
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center space-x-2">
@@ -94,8 +103,10 @@ const ItemActivity: React.FC<{ betId: bigint }> = ({ betId }) => {
 
 const RecentActivity = () => {
   const { userBets } = useReadState();
-
   console.log("User Bets:", userBets);
+
+  const hasNoBets = !userBets || userBets.length === 0;
+
   return (
     <div className="p-4 bg-secondary rounded-lg border border-primary border-dashed space-y-4">
       <div>
@@ -104,14 +115,32 @@ const RecentActivity = () => {
           View your recent bets
         </div>
       </div>
-      <div className="space-y-4">
-        {userBets
-          ?.slice()
-          .reverse()
-          .map((betId) => (
-            <ItemActivity key={betId} betId={betId} />
-          ))}
-      </div>
+
+      {hasNoBets ? (
+        <div className="flex flex-col items-center justify-center py-8 space-y-3">
+          <div className="p-3 bg-muted rounded-full">
+            <Activity className="h-6 w-6 text-muted-foreground" />
+          </div>
+          <div className="text-center space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">
+              No recent activity
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Your betting history will appear here once you place your first
+              bet
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {userBets
+            ?.slice()
+            .reverse()
+            .map((betId) => (
+              <ItemActivity key={betId} betId={betId} />
+            ))}
+        </div>
+      )}
     </div>
   );
 };

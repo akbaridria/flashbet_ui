@@ -132,9 +132,15 @@ const Header = () => {
             <TooltipButton
               content="Learn more about FlashBet"
               trigger={
-                <Button variant="ghost" size="icon">
-                  <InfoIcon className="h-4 w-4" />
-                </Button>
+                <a
+                  href={config.githubRepo + "#readme"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="ghost" size="icon">
+                    <InfoIcon className="h-4 w-4" />
+                  </Button>
+                </a>
               }
             />
             <Separator orientation="vertical" className="min-h-4" />

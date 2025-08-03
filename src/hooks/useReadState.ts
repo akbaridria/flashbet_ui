@@ -30,6 +30,7 @@ const useReadState = () => {
     args: [address],
     query: {
       enabled: !!address,
+      refetchInterval: 10_000,
     },
   });
 

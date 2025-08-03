@@ -12,6 +12,7 @@ import { useMemo } from "react";
 import { formatUnits } from "viem";
 import { formatCurrency } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
+import WalletOverlay from "./wallet-overlay";
 
 const StatusBet = ["Pending", "Resolved", "Cancelled"];
 
@@ -108,40 +109,42 @@ const RecentActivity = () => {
   const hasNoBets = !userBets || userBets.length === 0;
 
   return (
-    <div className="p-4 bg-secondary rounded-lg border border-primary border-dashed space-y-4">
-      <div>
-        <div className="text-lg font-semibold">Recent Activity</div>
-        <div className="text-xs text-muted-foreground">
-          View your recent bets
+    <WalletOverlay>
+      <div className="p-4 bg-secondary rounded-lg border border-primary border-dashed space-y-4">
+        <div>
+          <div className="text-lg font-semibold">Recent Activity</div>
+          <div className="text-xs text-muted-foreground">
+            View your recent bets
+          </div>
         </div>
-      </div>
 
-      {hasNoBets ? (
-        <div className="flex flex-col items-center justify-center py-8 space-y-3">
-          <div className="p-3 bg-muted rounded-full">
-            <Activity className="h-6 w-6 text-muted-foreground" />
+        {hasNoBets ? (
+          <div className="flex flex-col items-center justify-center py-8 space-y-3">
+            <div className="p-3 bg-muted rounded-full">
+              <Activity className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <div className="text-center space-y-1">
+              <p className="text-sm font-medium text-muted-foreground">
+                No recent activity
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Your betting history will appear here once you place your first
+                bet
+              </p>
+            </div>
           </div>
-          <div className="text-center space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">
-              No recent activity
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Your betting history will appear here once you place your first
-              bet
-            </p>
+        ) : (
+          <div className="space-y-4 max-h-[400px] overflow-y-auto">
+            {userBets
+              ?.slice()
+              .reverse()
+              .map((betId) => (
+                <ItemActivity key={betId} betId={betId} />
+              ))}
           </div>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {userBets
-            ?.slice()
-            .reverse()
-            .map((betId) => (
-              <ItemActivity key={betId} betId={betId} />
-            ))}
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </WalletOverlay>
   );
 };
 

@@ -48,8 +48,9 @@ const FaucetButton: React.FC<FaucetButtonProps> = ({ onClaim }) => {
         <TooltipButton
           content="Get USDC from the faucet"
           trigger={
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost">
               <DropletsIcon className="h-4 w-4" />
+              <div>Faucet</div>
             </Button>
           }
         />

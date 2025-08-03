@@ -19,6 +19,7 @@ import {
 } from "./ui/dialog";
 import useHandleApprove from "@/hooks/useHandleApprove";
 import useHandlePlaceBet from "@/hooks/useHandlePlaceBet";
+import WalletOverlay from "./wallet-overlay";
 
 const durationOptions = [
   { label: "2m", value: 60 * 2 },
@@ -171,86 +172,88 @@ const PlaceBet = () => {
     return formatCurrency(formatUnits(usdcBalance, 6));
   }, [usdcBalance]);
   return (
-    <div className="p-4 bg-secondary rounded-lg border border-primary border-dashed space-y-4">
-      <div className="flex flex-col">
-        <div className="text-lg font-semibold">Place Your Bet</div>
-        <div className="text-xs text-muted-foreground">
-          Enter your trading position
+    <WalletOverlay description="Connect your wallet to start a prediction">
+      <div className="p-4 bg-secondary rounded-lg border border-primary border-dashed space-y-4">
+        <div className="flex flex-col">
+          <div className="text-lg font-semibold">Place Your Bet</div>
+          <div className="text-xs text-muted-foreground">
+            Enter your trading position
+          </div>
         </div>
-      </div>
-      <div className="space-y-2">
-        <Label>Direction</Label>
-        <div className="grid grid-cols-2 gap-2">
-          <Button
-            variant={betDirection === "up" ? "default" : "outline"}
-            onClick={() => setBetDirection("up")}
-            className="transition-all duration-300"
-          >
-            <TrendingUpIcon className="mr-2 h-4 w-4" />
-            Up
-          </Button>
-          <Button
-            variant={betDirection === "down" ? "destructive" : "outline"}
-            onClick={() => setBetDirection("down")}
-            className="transition-all duration-300"
-          >
-            <TrendingDownIcon className="mr-2 h-4 w-4" />
-            Down
-          </Button>
-        </div>
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="duration">Duration</Label>
-        <div className="flex items-center gap-2 flex-wrap">
-          {durationOptions.map((option) => (
-            <div
-              key={option.label}
-              className={cn(
-                "bg-input/20 border rounded-lg px-4 py-1 hover:bg-input/30 hover:border-primary transition-colors cursor-pointer",
-                {
-                  "border-primary bg-input/30": betDuration === option.value,
-                }
-              )}
-              onClick={() => setBetDuration(option.value)}
+        <div className="space-y-2">
+          <Label>Direction</Label>
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              variant={betDirection === "up" ? "default" : "outline"}
+              onClick={() => setBetDirection("up")}
+              className="transition-all duration-300"
             >
-              <span className="text-sm font-medium">{option.label}</span>
-            </div>
-          ))}
+              <TrendingUpIcon className="mr-2 h-4 w-4" />
+              Up
+            </Button>
+            <Button
+              variant={betDirection === "down" ? "destructive" : "outline"}
+              onClick={() => setBetDirection("down")}
+              className="transition-all duration-300"
+            >
+              <TrendingDownIcon className="mr-2 h-4 w-4" />
+              Down
+            </Button>
+          </div>
         </div>
-      </div>
+        <div className="space-y-2">
+          <Label htmlFor="duration">Duration</Label>
+          <div className="flex items-center gap-2 flex-wrap">
+            {durationOptions.map((option) => (
+              <div
+                key={option.label}
+                className={cn(
+                  "bg-input/20 border rounded-lg px-4 py-1 hover:bg-input/30 hover:border-primary transition-colors cursor-pointer",
+                  {
+                    "border-primary bg-input/30": betDuration === option.value,
+                  }
+                )}
+                onClick={() => setBetDuration(option.value)}
+              >
+                <span className="text-sm font-medium">{option.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="amount">Amount</Label>
-        <Input
-          id="amount"
-          type="number"
-          placeholder="0.00"
-          value={betAmount}
-          onChange={(e) => setBetAmount(e.target.value)}
+        <div className="space-y-2">
+          <Label htmlFor="amount">Amount</Label>
+          <Input
+            id="amount"
+            type="number"
+            placeholder="0.00"
+            value={betAmount}
+            onChange={(e) => setBetAmount(e.target.value)}
+          />
+          <p className="text-right text-xs">Your balance: {yourBalance}</p>
+        </div>
+
+        <div className="rounded-lg border p-4 space-y-2">
+          <CurrentBtcPrice />
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">Potential Profit</span>
+            <span className="font-medium text-green-400">
+              +${betAmount ? (parseFloat(betAmount) * 1.75).toFixed(2) : "0.00"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">Multiplier</span>
+            <span className="font-medium">1.75x</span>
+          </div>
+        </div>
+
+        <DialogConfirmationBet
+          betDirection={betDirection}
+          betAmount={betAmount}
+          betDuration={betDuration}
         />
-        <p className="text-right text-xs">Your balance: {yourBalance}</p>
       </div>
-
-      <div className="rounded-lg border p-4 space-y-2">
-        <CurrentBtcPrice />
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Potential Profit</span>
-          <span className="font-medium text-green-400">
-            +${betAmount ? (parseFloat(betAmount) * 1.75).toFixed(2) : "0.00"}
-          </span>
-        </div>
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Multiplier</span>
-          <span className="font-medium">1.75x</span>
-        </div>
-      </div>
-
-      <DialogConfirmationBet
-        betDirection={betDirection}
-        betAmount={betAmount}
-        betDuration={betDuration}
-      />
-    </div>
+    </WalletOverlay>
   );
 };
 

@@ -18,6 +18,7 @@ import { formatUnits } from "viem";
 import useHandleApprove from "@/hooks/useHandleApprove";
 import useHandleAddedLiquidity from "@/hooks/useHandleAddedLiquidity";
 import useHandleRemoveLiquidity from "@/hooks/useHandleRemoveLiquidity";
+import WalletOverlay from "./wallet-overlay";
 
 interface DialogConfirmationAddLiquidityProps {
   isDialogOpen: boolean;
@@ -123,87 +124,89 @@ const LiquidityManagement = () => {
     );
   }, []);
   return (
-    <div className="p-4 bg-secondary rounded-lg border border-primary border-dashed space-y-4">
-      <div>
-        <div className="text-lg font-semibold">Your Liquidity</div>
-        <div className="text-xs text-muted-foreground">
-          Manage your liquidity positions
+    <WalletOverlay description="Connect your wallet to manage liquidity">
+      <div className="p-4 bg-secondary rounded-lg border border-primary border-dashed space-y-4">
+        <div>
+          <div className="text-lg font-semibold">Your Liquidity</div>
+          <div className="text-xs text-muted-foreground">
+            Manage your liquidity positions
+          </div>
+        </div>
+        <div className="rounded-lg border p-4">
+          <div className="text-2xl font-bold">
+            {userBalance !== undefined
+              ? formatCurrency(formatUnits(userBalance, 6))
+              : "-"}
+          </div>
+          <p className="text-xs text-muted-foreground">Your liquidity</p>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="liquidity">Add Liquidity</Label>
+          <div className="flex space-x-2">
+            <Input
+              id="liquidity"
+              type="number"
+              placeholder="0.00"
+              value={liquidityAmount}
+              onChange={(e) => setLiquidityAmount(e.target.value)}
+            />
+            <Button
+              disabled={!liquidityAmount}
+              onClick={() => setIsDialogOpen(true)}
+            >
+              <PlusIcon className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        <Separator />
+
+        <div className="space-y-2">
+          <Label htmlFor="withdraw">Withdraw</Label>
+          <div className="flex space-x-2">
+            <Input
+              id="withdraw"
+              type="number"
+              placeholder="0.00"
+              value={withdrawAmount}
+              onChange={(e) => setWithdrawAmount(e.target.value)}
+              disabled={!isWithdrawalOpen}
+            />
+            <Button
+              disabled={!withdrawAmount || !isWithdrawalOpen || isFetching}
+              variant="outline"
+              onClick={handleRemoveLiquidity}
+            >
+              <MinusIcon className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        <DialogConfirmationAddLiquidity
+          isDialogOpen={isDialogOpen}
+          setIsDialogOpen={setIsDialogOpen}
+          currentLiquidity={formatUnits(userBalance || 0n, 6) || "0"}
+          addedAmount={liquidityAmount}
+        />
+
+        <div className="rounded-lg border p-3">
+          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+            <ClockIcon className="h-3 w-3" />
+            <span>Withdrawal Window: 9.15PM-10PM UTC</span>
+          </div>
+          <p className="text-xs mt-1">
+            {timeUntilWithdrawalWindowOpens !== undefined
+              ? `${Math.floor(
+                  Number(timeUntilWithdrawalWindowOpens) / 3600
+                )}h ${Math.floor(
+                  (Number(timeUntilWithdrawalWindowOpens) % 3600) / 60
+                )}m until next withdrawal window`
+              : "Time until withdrawal window is unavailable"}
+          </p>
         </div>
       </div>
-      <div className="rounded-lg border p-4">
-        <div className="text-2xl font-bold">
-          {userBalance !== undefined
-            ? formatCurrency(formatUnits(userBalance, 6))
-            : "-"}
-        </div>
-        <p className="text-xs text-muted-foreground">Your liquidity</p>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="liquidity">Add Liquidity</Label>
-        <div className="flex space-x-2">
-          <Input
-            id="liquidity"
-            type="number"
-            placeholder="0.00"
-            value={liquidityAmount}
-            onChange={(e) => setLiquidityAmount(e.target.value)}
-          />
-          <Button
-            disabled={!liquidityAmount}
-            onClick={() => setIsDialogOpen(true)}
-          >
-            <PlusIcon className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      <Separator />
-
-      <div className="space-y-2">
-        <Label htmlFor="withdraw">Withdraw</Label>
-        <div className="flex space-x-2">
-          <Input
-            id="withdraw"
-            type="number"
-            placeholder="0.00"
-            value={withdrawAmount}
-            onChange={(e) => setWithdrawAmount(e.target.value)}
-            disabled={!isWithdrawalOpen}
-          />
-          <Button
-            disabled={!withdrawAmount || !isWithdrawalOpen || isFetching}
-            variant="outline"
-            onClick={handleRemoveLiquidity}
-          >
-            <MinusIcon className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      <DialogConfirmationAddLiquidity
-        isDialogOpen={isDialogOpen}
-        setIsDialogOpen={setIsDialogOpen}
-        currentLiquidity={formatUnits(userBalance || 0n, 6) || "0"}
-        addedAmount={liquidityAmount}
-      />
-
-      <div className="rounded-lg border p-3">
-        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-          <ClockIcon className="h-3 w-3" />
-          <span>Withdrawal Window: 9.15PM-10PM UTC</span>
-        </div>
-        <p className="text-xs mt-1">
-          {timeUntilWithdrawalWindowOpens !== undefined
-            ? `${Math.floor(
-                Number(timeUntilWithdrawalWindowOpens) / 3600
-              )}h ${Math.floor(
-                (Number(timeUntilWithdrawalWindowOpens) % 3600) / 60
-              )}m until next withdrawal window`
-            : "Time until withdrawal window is unavailable"}
-        </p>
-      </div>
-    </div>
+    </WalletOverlay>
   );
 };
 
